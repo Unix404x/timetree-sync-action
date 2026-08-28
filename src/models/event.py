@@ -15,6 +15,7 @@ class Event:
     all_day: bool
     location: str | None = None
     description: str | None = None
+    recurrences: list[str] | None = None
 
     @classmethod
     def from_timetree(cls, event: dict):
@@ -22,7 +23,7 @@ class Event:
         end_tz = ZoneInfo(event["end_timezone"])
 
         return cls(
-            id=event["id"],
+            id=event["uuid"] if "uuid" in event else event["id"],
             title=event["title"],
             start=datetime.fromtimestamp(
                 event["start_at"] / 1000,
@@ -35,6 +36,7 @@ class Event:
             all_day=event["all_day"],
             location=event.get("location") or None,
             description=event.get("note") or None,
+            recurrences=event.get("recurrences") or None,
         )
 
     def to_google(self, calendar_code: str) -> dict:
@@ -57,13 +59,15 @@ class Event:
                 "date": self.end.strftime("%Y-%m-%d"),
             }
         else:
+            timezone = self.start.tzinfo.key
+
             event["start"] = {
                 "dateTime": self.start.isoformat(),
-                "timeZone": "Asia/Tokyo",
+                "timeZone": timezone,
             }
             event["end"] = {
                 "dateTime": self.end.isoformat(),
-                "timeZone": "Asia/Tokyo",
+                "timeZone": timezone,
             }
 
         if self.location:
@@ -71,6 +75,9 @@ class Event:
 
         if self.description:
             event["description"] = self.description
+
+        if self.recurrences:
+            event["recurrence"] = self.recurrences
 
         return event
 
@@ -83,4 +90,5 @@ class Event:
             and google.get("description") == google_event.get("description")
             and google.get("start") == google_event.get("start")
             and google.get("end") == google_event.get("end")
+            and google.get("recurrence") == google_event.get("recurrence")
         )
