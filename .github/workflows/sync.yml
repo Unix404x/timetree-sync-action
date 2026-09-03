@@ -2,7 +2,7 @@ name: TimeTree Sync
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "7,37 * * * *"
 
   # Public配布用では定期実行を無効化しています。
   # 利用する場合は、下記3行の「#」を削除してください。
