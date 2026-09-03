@@ -3,6 +3,7 @@ name: TimeTree Sync
 on:
   schedule:
     - cron: "7,37 * * * *"
+      timezone: "Europe/Paris"
   workflow_dispatch:
 
   # Public配布用では定期実行を無効化しています。
