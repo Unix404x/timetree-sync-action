@@ -14,5 +14,8 @@ class TimeTree:
     def get_calendar(self, alias_code: str):
         return self._service.get_calendar(alias_code)
 
+    def get_labels(self, calendar):
+        return self._service.get_labels(calendar)
+
     def get_events(self, calendar):
         return self._service.get_events(calendar)
