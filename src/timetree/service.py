@@ -31,5 +31,12 @@ class TimeTreeService:
                 )
         raise RuntimeError(f"Calendar '{alias_code}' not found.")
 
+    def get_labels(self, calendar: Calendar) -> dict:
+        """Labels of the calendar ({id: {"name", "color"}}); empty if unavailable."""
+        try:
+            return calendar.get_labels() or {}
+        except Exception:  # noqa: BLE001 - labels are optional, never block the sync
+            return {}
+
     def get_events(self, calendar: Calendar):
         return calendar.get_events()
